@@ -4,7 +4,7 @@ import uniqid from 'uniqid';
 import Task from '../components/Task';
 
 export default function Home() {
-  const [taskList, setTaskList] = useState();
+  const [taskList, setTaskList] = useState([]);
   const [newTaskName, setNewTaskName] = useState('');
 
   const toggleDone = (taskId) =>
@@ -19,10 +19,13 @@ export default function Home() {
       <h1>My todo list</h1>
       <form
         onSubmit={(e) => {
-          setTaskList([
-            ...taskList,
-            { id: uniqid(), name: newTaskName, done: false },
-          ]);
+          e.preventDefault();
+          if (newTaskName)
+            setTaskList([
+              { id: uniqid(), name: newTaskName, done: false },
+              ...taskList,
+            ]);
+          setNewTaskName('');
         }}
       >
         <label htmlFor='newTask'>
@@ -33,16 +36,23 @@ export default function Home() {
             value={newTaskName}
           />
         </label>
+        <button type='submit'>Add</button>
       </form>
-      {taskList.map((task) => {
+      {taskList.map((task) => (
         <Task
+          key={task.id}
           onClick={() => toggleDone(task.id)}
           name={task.name}
           done={task.done}
-        />;
-      })}
-      completed : {taskList.reduce((acc, curr) => (acc + curr.done ? 1 : 0), 0)}{' '}
-      / {taskList.length}
+        />
+      ))}
+      {taskList.length > 0 && (
+        <>
+          completed :{' '}
+          {taskList.reduce((acc, curr) => acc + (curr.done ? 1 : 0), 0)} /{' '}
+          {taskList.length}
+        </>
+      )}
     </div>
   );
 }
