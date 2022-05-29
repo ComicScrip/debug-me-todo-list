@@ -1,0 +1,7 @@
+.taskContainer {
+  cursor: pointer;
+}
+
+.taskDone {
+  text-decoration: line-through;
+}
